@@ -1,0 +1,21 @@
+language: java
+
+
+jdk:
+- openjdk15
+services:
+- postgresql
+before_install:
+- psql -c 'CREATE DATABASE rest' -U postgres
+env:
+  global:
+  - CODECOV_TOKEN="13cd1a37-e9c1-4285-afcb-8913f1d970c9"
+sudo: false
+after_success:
+- bash <(curl -s https://codecov.io/bash)
+notifications:
+  email:
+    recipients:
+    - dda.90@mail.ru
+    on_success: never
+    on_failure: always
