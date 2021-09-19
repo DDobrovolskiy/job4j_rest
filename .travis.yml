@@ -1,21 +1,29 @@
 language: java
-install: true
-script: mvn clean package -DskipTests=true
 jdk:
-- openjdk15
+  - openjdk15
+
 services:
-- postgresql
+  - postgresql
+
 before_install:
-- psql -c 'CREATE DATABASE rest' -U postgres
+  - psql -c 'CREATE DATABASE auth' -U postgres
+
 env:
   global:
-  - CODECOV_TOKEN="13cd1a37-e9c1-4285-afcb-8913f1d970c9"
+    - CODECOV_TOKEN="571d0f85-405b-4031-88de-3a1e91661c0e"
+
+# используем режим обычного пользователя для сборки проекта.
 sudo: false
+
+# после выполнения сборки запустить скрипт, который будет собирать статистику по JaCoCo
+# Здесь используется сторонний сервис https://codecov.io/
 after_success:
-- bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash)
+
+# Отправлять уведомление на почтуyouremail@smtp.ru(Изменить на свою) если сборка упала
 notifications:
   email:
     recipients:
-    - dda.90@mail.ru
-    on_success: never
-    on_failure: always
+      - dda.90@mail.ru
+    on_success: never # default: change
+    on_failure: always # default: always
