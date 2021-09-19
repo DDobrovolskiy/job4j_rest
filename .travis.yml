@@ -2,6 +2,11 @@ language: java
 jdk:
   - openjdk15
 
+install: true
+
+script:
+  - mvn install
+
 services:
   - postgresql
 
