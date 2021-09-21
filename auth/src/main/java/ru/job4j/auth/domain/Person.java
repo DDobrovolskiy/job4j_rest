@@ -1,5 +1,6 @@
 package ru.job4j.auth.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,4 +24,7 @@ public class Person implements Serializable {
     @NonNull
     @Column(nullable = false)
     private String password;
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
 }

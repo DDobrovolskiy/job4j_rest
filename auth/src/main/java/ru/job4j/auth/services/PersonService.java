@@ -34,6 +34,7 @@ public class PersonService {
     }
 
     public Person create(@NonNull Person person) {
+        log.debug("create: {}", person);
         return this.persons.save(person);
     }
 
@@ -43,5 +44,9 @@ public class PersonService {
 
     public void delete(@PathVariable long id) {
         this.persons.deleteById(id);
+    }
+
+    public List<Person> findByEmployee(long idEmployee) {
+        return this.persons.findByEmployeeId(idEmployee);
     }
 }

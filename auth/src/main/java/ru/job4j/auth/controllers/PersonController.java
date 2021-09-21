@@ -55,4 +55,11 @@ public class PersonController {
         this.personService.delete(id);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/employee/{id}")
+    public ResponseEntity<List<Person>> findByIdEmployee(@PathVariable long id) {
+        return new ResponseEntity<>(
+                this.personService.findByEmployee(id),
+                HttpStatus.OK);
+    }
 }

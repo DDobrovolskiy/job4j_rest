@@ -14,9 +14,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.job4j.auth.domain.Employee;
 import ru.job4j.auth.domain.Person;
 import ru.job4j.auth.services.PersonService;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +47,7 @@ public class PersonControllerTest {
     public void findAll() throws Exception {
         when(personService.findAll())
                 .thenReturn(List.of(
-                        new Person(1, "login", "password")));
+                        new Person(1, "login", "password", null)));
         mockMvc.perform(get("/persons/"))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -54,7 +56,7 @@ public class PersonControllerTest {
 
     @Test
     public void findByIdFound() throws Exception {
-        Person person = new Person(1, "login", "password");
+        Person person = new Person(1, "login", "password", null);
         when(personService.findById(1))
                 .thenReturn(Optional.of(person));
         var result = mockMvc.perform(get("/persons/1"))
@@ -84,8 +86,8 @@ public class PersonControllerTest {
     public void create() throws Exception {
         String login = "login";
         String password = "password";
-        Person person = new Person(1, login, password);
-        Person personNew = new Person(0, login, password);
+        Person person = new Person(1, login, password, null);
+        Person personNew = new Person(0, login, password, null);
         when(personService.create(personNew))
                 .thenReturn(person);
         var result = mockMvc.perform(post("/persons/")
@@ -104,7 +106,7 @@ public class PersonControllerTest {
     public void update() throws Exception {
         String login = "login";
         String password = "password";
-        Person person = new Person(3, login, password);
+        Person person = new Person(3, login, password, null);
         mockMvc.perform(put("/persons/")
                 .content(
                         new ObjectMapper().writeValueAsString(person))
