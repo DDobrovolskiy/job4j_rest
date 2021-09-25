@@ -3,6 +3,7 @@ package ru.job4j.chat.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.chat.models.Person;
 import ru.job4j.chat.models.Role;
@@ -36,11 +37,12 @@ public class PersonControl {
     }
 
     @PutMapping()
-    public ResponseEntity<Void> update(Person person) {
+    public ResponseEntity<Void> update(@RequestBody Person person) {
         personService.update(person);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
         personService.delete(id);

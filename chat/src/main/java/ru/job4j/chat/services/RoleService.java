@@ -1,5 +1,6 @@
 package ru.job4j.chat.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.job4j.chat.models.Role;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class RoleService {
     @Autowired
     private RoleRepository roleRepository;
@@ -22,7 +24,12 @@ public class RoleService {
     }
 
     public Role save(Role role) {
-        return roleRepository.save(role);
+        try {
+            return roleRepository.save(role);
+        } catch (Exception e) {
+            log.error("Error", e);
+            return role;
+        }
     }
 
     public void update(Role role) {
