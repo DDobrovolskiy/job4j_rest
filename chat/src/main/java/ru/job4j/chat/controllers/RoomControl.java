@@ -1,5 +1,7 @@
 package ru.job4j.chat.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,14 +10,21 @@ import ru.job4j.chat.models.Person;
 import ru.job4j.chat.models.Room;
 import ru.job4j.chat.services.RoomService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
 @RequestMapping("/rooms")
+@Slf4j
 public class RoomControl {
 
     @Autowired
     private RoomService roomService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @GetMapping()
     public List<Room> findAll() {
@@ -54,10 +63,11 @@ public class RoomControl {
     public ResponseEntity<Void> insertPersonInRoom(
             @PathVariable long idRoom,
             @RequestBody Person person) {
-        return new ResponseEntity<>(
-                roomService.personInsertRoom(person.getId(), idRoom)
-                        ? HttpStatus.OK : HttpStatus.NOT_FOUND
-        );
+        if (roomService.personInsertRoom(person.getId(), idRoom)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            throw new IllegalArgumentException("Person or Room not find");
+        }
     }
 
     @DeleteMapping("/{idRoom}/person/{idPerson}")
@@ -68,5 +78,17 @@ public class RoomControl {
                 roomService.personDeleteRoom(idPerson, idRoom)
                         ? HttpStatus.OK : HttpStatus.NOT_FOUND
         );
+    }
+
+    @ExceptionHandler(value = {IllegalArgumentException.class})
+    public void exceptionSpecificity(Exception e, HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
+        resp.setStatus(HttpStatus.NOT_FOUND.value());
+        resp.setContentType("application/json");
+        resp.getWriter().write(objectMapper.writeValueAsString(new HashMap<>() { {
+            put("message", e.getMessage());
+            put("type", e.getClass());
+        }}));
+        log.error(e.getLocalizedMessage());
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.chat.models.Person;
 import ru.job4j.chat.models.Role;
 import ru.job4j.chat.services.PersonService;
@@ -24,11 +25,10 @@ public class PersonControl {
 
     @GetMapping("/{id}")
     public ResponseEntity<Person> findById(@PathVariable long id) {
-        var person = personService.findById(id);
-        return new ResponseEntity<>(
-                person.orElse(new Person()),
-                person.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND
-        );
+        var person = personService.findById(id).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Person not found"
+        ));
+        return new ResponseEntity<>(person, HttpStatus.OK);
     }
 
     @PostMapping()
