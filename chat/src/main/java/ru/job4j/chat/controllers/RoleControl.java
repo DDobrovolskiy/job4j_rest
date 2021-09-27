@@ -2,6 +2,7 @@ package ru.job4j.chat.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.chat.models.Role;
@@ -32,13 +33,17 @@ public class RoleControl {
 
     @PostMapping()
     public ResponseEntity<Role> save(@RequestBody Role role) {
-        return new ResponseEntity<>(roleService.save(role), HttpStatus.CREATED);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .header("MyHead", "Head")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(roleService.save(role));
     }
 
     @PutMapping()
     public ResponseEntity<Void> update(Role role) {
         roleService.update(role);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

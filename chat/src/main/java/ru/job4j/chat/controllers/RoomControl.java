@@ -34,10 +34,7 @@ public class RoomControl {
     @GetMapping("/{id}")
     public ResponseEntity<Room> findById(@PathVariable long id) {
         var room = roomService.findById(id);
-        return new ResponseEntity<>(
-                room.orElse(new Room()),
-                room.isPresent() ? HttpStatus.OK : HttpStatus.FOUND
-        );
+        return ResponseEntity.of(room);
     }
 
     @PostMapping()
