@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "rooms")
@@ -21,8 +23,8 @@ public class Room {
     private String name;
     @JsonIgnore
     @OneToMany(mappedBy = "room", orphanRemoval = true)
-    private List<Message> messages = new LinkedList<>();
+    private Set<Message> messages = new HashSet<>();
     @JsonIgnore
     @ManyToMany
-    private List<Person> persons = new LinkedList<>();
+    private Set<Person> persons = new HashSet<>();
 }

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.job4j.chat.dto.PersonDTO;
+import ru.job4j.chat.dto.RoomDTO;
 import ru.job4j.chat.models.Person;
 import ru.job4j.chat.models.Room;
 import ru.job4j.chat.services.RoomService;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/rooms")
@@ -27,7 +30,7 @@ public class RoomControl {
     private ObjectMapper objectMapper;
 
     @GetMapping()
-    public List<Room> findAll() {
+    public Set<Room> findAll() {
         return roomService.findAll();
     }
 
@@ -87,5 +90,11 @@ public class RoomControl {
             put("type", e.getClass());
         }}));
         log.error(e.getLocalizedMessage());
+    }
+
+    @PatchMapping()
+    public ResponseEntity<Void> patch(@RequestBody RoomDTO roomDTO) {
+        roomService.patchRoom(roomDTO);
+        return ResponseEntity.ok().build();
     }
 }

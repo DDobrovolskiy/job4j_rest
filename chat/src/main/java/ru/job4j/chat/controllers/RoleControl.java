@@ -5,10 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.job4j.chat.dto.PersonDTO;
+import ru.job4j.chat.dto.RoleDTO;
 import ru.job4j.chat.models.Role;
 import ru.job4j.chat.services.RoleService;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/roles")
@@ -18,7 +21,7 @@ public class RoleControl {
     private RoleService roleService;
 
     @GetMapping()
-    public List<Role> findAll() {
+    public Set<Role> findAll() {
         return roleService.findAll();
     }
 
@@ -50,5 +53,11 @@ public class RoleControl {
     public ResponseEntity<Void> delete(@PathVariable long id) {
         roleService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping()
+    public ResponseEntity<Void> patch(@RequestBody RoleDTO roleDTO) {
+        roleService.patchRole(roleDTO);
+        return ResponseEntity.ok().build();
     }
 }

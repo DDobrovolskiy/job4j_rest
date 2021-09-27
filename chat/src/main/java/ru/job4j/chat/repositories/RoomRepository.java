@@ -4,7 +4,10 @@ import org.springframework.data.repository.CrudRepository;
 import ru.job4j.chat.models.Room;
 
 import java.util.List;
+import java.util.Set;
 
 public interface RoomRepository extends CrudRepository<Room, Long> {
-    List<Room> findAll();
+    Set<Room> findAll();
+
+    Set<Room> findAllById(Iterable<Long> ids);
 }

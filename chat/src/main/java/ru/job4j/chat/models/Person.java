@@ -7,9 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "persons")
@@ -33,13 +31,13 @@ public class Person implements UserDetails {
             name = "person_role",
             joinColumns = {@JoinColumn(name = "person_id", nullable = false)},
             inverseJoinColumns = {@JoinColumn(name = "role_id", nullable = false)})
-    private List<Role> roles = new LinkedList<>();
+    private Set<Role> roles = new HashSet<>();
     @JsonIgnore
     @OneToMany(mappedBy = "person")
-    private List<Message> messages = new LinkedList<>();
+    private Set<Message> messages = new HashSet<>();
     @JsonIgnore
     @ManyToMany(mappedBy = "persons")
-    private List<Room> rooms = new LinkedList<>();
+    private Set<Room> rooms = new HashSet<>();
 
     public boolean addRole(Role role) {
         log.debug("Role add: {}", role);

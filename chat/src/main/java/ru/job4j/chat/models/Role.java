@@ -5,8 +5,10 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "roles")
@@ -23,7 +25,7 @@ public class Role implements GrantedAuthority {
     private String title;
     @JsonIgnore
     @ManyToMany(mappedBy = "roles")
-    private List<Person> persons = new LinkedList<>();
+    private Set<Person> persons = new HashSet<>();
 
     @Override
     public String getAuthority() {

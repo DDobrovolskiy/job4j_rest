@@ -45,6 +45,6 @@ public class PersonServiceTest {
     public void findByName() {
         var personFind = personService.findByName("name");
         System.out.println(personFind.get().getRoles());
-        Assert.assertThat(personFind.get().getRoles().get(0), is(role));
+        Assert.assertTrue(personFind.get().getRoles().contains(role));
     }
 }

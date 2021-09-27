@@ -6,11 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import ru.job4j.chat.dto.PersonDTO;
 import ru.job4j.chat.models.Person;
 import ru.job4j.chat.models.Role;
 import ru.job4j.chat.services.PersonService;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/persons")
@@ -19,7 +21,7 @@ public class PersonControl {
     private PersonService personService;
 
     @GetMapping()
-    public List<Person> findAll() {
+    public Set<Person> findAll() {
         return personService.findAll();
     }
 
@@ -47,5 +49,11 @@ public class PersonControl {
     public ResponseEntity<Void> delete(@PathVariable long id) {
         personService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping()
+    public ResponseEntity<Void> patch(@RequestBody PersonDTO personDTO) {
+        personService.patchPerson(personDTO);
+        return ResponseEntity.ok().build();
     }
 }
