@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import ru.job4j.chat.dto.RoomDTO;
 import ru.job4j.chat.models.Message;
 import ru.job4j.chat.models.Person;
@@ -12,11 +13,17 @@ import ru.job4j.chat.models.Room;
 import ru.job4j.chat.repositories.MessageRepository;
 import ru.job4j.chat.repositories.PersonRepository;
 import ru.job4j.chat.repositories.RoomRepository;
+import ru.job4j.chat.validators.TargetValidated;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.Optional;
 import java.util.Set;
 
 @Service
+@Validated
 public class RoomService {
 
     private final RoomRepository roomRepository;
@@ -35,24 +42,26 @@ public class RoomService {
         return roomRepository.findAll();
     }
 
-    public Optional<Room> findById(long id) {
+    public Optional<Room> findById(@Positive long id) {
         return roomRepository.findById(id);
     }
 
-    public Room save(Room room) {
+    @Validated({TargetValidated.RoomCreate.class})
+    public Room save(@Valid Room room) {
         return roomRepository.save(room);
     }
 
-    public void update(Room room) {
-        save(room);
+    @Validated({TargetValidated.RoomUpdate.class})
+    public void update(@Valid Room room) {
+        roomRepository.save(room);
     }
 
-    public void delete(long id) {
+    public void delete(@Positive long id) {
         roomRepository.deleteById(id);
     }
 
     @Transactional
-    public boolean personInsertRoom(long idPerson, long idRoom) {
+    public boolean personInsertRoom(@Positive long idPerson, @Positive long idRoom) {
         var person = personRepository.findById(idPerson);
         var room = this.findById(idRoom);
         if (person.isPresent() && room.isPresent()) {
@@ -66,7 +75,7 @@ public class RoomService {
     }
 
     @Transactional
-    public boolean personDeleteRoom(long idPerson, long idRoom) {
+    public boolean personDeleteRoom(@Positive long idPerson, @Positive long idRoom) {
         var person = personRepository.findById(idPerson);
         var room = this.findById(idRoom);
         if (person.isPresent() && room.isPresent()) {
@@ -79,7 +88,7 @@ public class RoomService {
         return false;
     }
 
-    public Set<Room> findAll(Set<Long> ids) {
+    public Set<Room> findAll(@NotNull Set<Long> ids) {
         return roomRepository.findAllById(ids);
     }
 

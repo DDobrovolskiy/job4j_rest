@@ -3,12 +3,15 @@ package ru.job4j.chat.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.chat.dto.MessageDTO;
-import ru.job4j.chat.dto.RoleDTO;
 import ru.job4j.chat.models.Message;
 import ru.job4j.chat.services.MessageService;
+import ru.job4j.chat.validators.TargetValidated;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +27,7 @@ public class MessageControl {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Message> getIdMessage(@PathVariable long id) {
+    public ResponseEntity<Message> getIdMessage(@PathVariable @Positive long id) {
         var message = messageService.findById(id);
         return new ResponseEntity<>(
                 message.orElse(new Message()),
@@ -33,29 +36,31 @@ public class MessageControl {
     }
 
     @PostMapping()
-    public ResponseEntity<Message> postMessage(@RequestBody Message message) {
+    @Validated(TargetValidated.MessageCreate.class)
+    public ResponseEntity<Message> postMessage(@RequestBody @Valid Message message) {
         return new ResponseEntity<>(messageService.save(message), HttpStatus.CREATED);
     }
 
     @PutMapping()
-    public ResponseEntity<Void> updateMessage(@RequestBody Message message) {
+    @Validated(TargetValidated.MessageUpdate.class)
+    public ResponseEntity<Void> updateMessage(@RequestBody @Valid Message message) {
         messageService.update(message);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMessage(@PathVariable long id) {
+    public ResponseEntity<Void> deleteMessage(@PathVariable @Positive long id) {
         messageService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/room/{id}")
-    public List<Message> getMessagesRoomId(@PathVariable long id) {
+    public List<Message> getMessagesRoomId(@PathVariable @Positive long id) {
         return messageService.findByRoomId(id);
     }
 
     @GetMapping("/person/{id}")
-    public List<Message> getMessagesPersonId(@PathVariable long id) {
+    public List<Message> getMessagesPersonId(@PathVariable @Positive long id) {
         return messageService.findByPersonId(id);
     }
 

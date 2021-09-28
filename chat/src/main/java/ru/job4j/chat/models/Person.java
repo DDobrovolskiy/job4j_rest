@@ -5,8 +5,13 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.job4j.chat.validators.TargetValidated;
+import ru.job4j.chat.validators.ValueValid;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
 import java.util.*;
 
 @Entity
@@ -20,10 +25,14 @@ import java.util.*;
 public class Person implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Positive(groups = {TargetValidated.PersonUpdate.class}, message = "Id can positive")
+    @ValueValid(groups = {TargetValidated.PersonCreate.class}, message = "For create Id can = 0")
     private long id;
     @Column(unique = true, nullable = false)
+    @NotBlank
     private String name;
     @Column(nullable = false)
+    @NotBlank
     private String password;
     @JsonIgnore
     @ManyToMany

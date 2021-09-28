@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import ru.job4j.chat.dto.PersonDTO;
 import ru.job4j.chat.models.Message;
 import ru.job4j.chat.models.Person;
@@ -15,7 +16,12 @@ import ru.job4j.chat.repositories.MessageRepository;
 import ru.job4j.chat.repositories.PersonRepository;
 import ru.job4j.chat.repositories.RoleRepository;
 import ru.job4j.chat.repositories.RoomRepository;
+import ru.job4j.chat.validators.TargetValidated;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
 import java.beans.Transient;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +30,7 @@ import java.util.Set;
 
 @Service
 @Slf4j
+@Validated
 public class PersonService {
 
     private final PersonRepository personRepository;
@@ -48,12 +55,13 @@ public class PersonService {
         return personRepository.findAll();
     }
 
-    public Optional<Person> findById(long id) {
+    public Optional<Person> findById(@Positive long id) {
         return personRepository.findById(id);
     }
 
     @Transactional
-    public Person save(Person person) {
+    @Validated({TargetValidated.PersonCreate.class})
+    public Person save(@Valid Person person) {
         log.debug("SAVE PERSON: {}", person);
         try {
             person.setPassword(encoder.encode(person.getPassword()));
@@ -66,19 +74,20 @@ public class PersonService {
         }
     }
 
-    public void update(Person person) {
-        save(person);
+    @Validated({TargetValidated.PersonUpdate.class})
+    public void update(@Valid Person person) {
+        personRepository.save(person);
     }
 
-    public void delete(long id) {
+    public void delete(@Positive long id) {
         personRepository.deleteById(id);
     }
 
-    public Optional<Person> findByName(String name) {
+    public Optional<Person> findByName(@NotBlank String name) {
         return personRepository.findByName(name);
     }
 
-    public Set<Person> findAll(Set<Long> ids) {
+    public Set<Person> findAll(@NotEmpty Set<Long> ids) {
         return personRepository.findAllById(ids);
     }
 
